@@ -6,7 +6,8 @@ define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 
         # Amazena a lista de pictures disponiveis
         _pictures :  [],
         _rendered : false,
-        _timer = null
+        _timer : null,
+        _timer2 : null,
         constructor: ( imagens )->
             that = this
             array.forEach imagens, (value)->
@@ -24,11 +25,19 @@ define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 
 
         resize : ()->
             that = this
-            _on win, 'resize', ()->
+            _on win, 'resize', ()-> 
 
                 clearTimeout _timer if _timer
 
                 _timer = setTimeout ()->
+                    that.render()
+                , 200
+
+            _on win, 'scroll', ()-> 
+
+                clearTimeout _timer2 if _timer2
+
+                _timer2 = setTimeout ()->
                     that.render()
                 , 200
     }
