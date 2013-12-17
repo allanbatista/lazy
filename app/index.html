@@ -1,0 +1,66 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>responsive lazyload image</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+        <!-- build:js scripts/vendor/modernizr.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <!-- endbuild -->
+    </head>
+    <body>
+        
+        <picture data-image-alt="Alt da imagem" data-lazy>
+           <source data-media="(min-width: 480px)"  data-src="http://placehold.it/480x320"  data-width="480"  data-height="320">
+           <source data-media="(min-width: 768px)"  data-src="http://placehold.it/768x600/ff0000"  data-width="768"  data-height="600">
+           <source data-media="(min-width: 1024px)" data-src="http://placehold.it/1024x600" data-width="1024" data-height="600">
+           <source data-media="(min-width: 1200px)" data-src="http://placehold.it/1200x600" data-width="1200" data-height="600">
+           <noscript>
+               <img src="http://placehold.it/1200x600" alt="Alt da imagem" width="1200" height="600">
+           </noscript>
+        </picture>
+
+        <picture data-image-alt="Alt da imagem" data-lazy>
+           <source data-media="(min-width: 480px)"  data-src="http://placehold.it/480x320"  data-width="480"  data-height="320">
+           <source data-media="(min-width: 768px)"  data-src="http://placehold.it/768x600/00ffff"  data-width="768"  data-height="600">
+           <source data-media="(min-width: 1024px)" data-src="http://placehold.it/1024x600" data-width="1024" data-height="600">
+           <source data-media="(min-width: 1200px)" data-src="http://placehold.it/1200x600" data-width="1200" data-height="600">
+           <noscript>
+               <img src="http://placehold.it/1200x600" alt="Alt da imagem" width="1200" height="600">
+           </noscript>
+        </picture>
+
+        <picture data-image-alt="Alt da imagem" data-lazy>
+           <source data-media="(min-width: 480px)"  data-src="http://placehold.it/480x320"  data-width="480"  data-height="320">
+           <source data-media="(min-width: 768px)"  data-src="http://placehold.it/768x600/000fff"  data-width="768"  data-height="600">
+           <source data-media="(min-width: 1024px)" data-src="http://placehold.it/1024x600" data-width="1024" data-height="600">
+           <source data-media="(min-width: 1200px)" data-src="http://placehold.it/1200x600" data-width="1200" data-height="600">
+           <noscript>
+               <img src="http://placehold.it/1200x600" alt="Alt da imagem" width="1200" height="600">
+           </noscript>
+        </picture>
+
+        <!-- build:js scripts/dojo.js -->
+        <script>
+            dojoConfig = {
+                packages: [{
+                    name: 'lazy',
+                    location: '/scripts'
+                }]
+            };
+        </script>
+
+        <script src="bower_components/dojo/dojo.js"></script>
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
+</body>
+</html>
