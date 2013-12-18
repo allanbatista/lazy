@@ -1,43 +1,44 @@
-define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/on'], (Picture, declare, query, array, _on) ->
+define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'onx/on/buffer', 'onx/on/delay', 'dojo/topic'], (Picture, declare, query, array, buffer, delay, topic) ->
 
     win = window
 
     return declare null, {
-        # Amazena a lista de pictures disponiveis
-        _pictures :  [],
-        _rendered : false,
-        _timer : null,
-        _timer2 : null,
+        _pictures :  [], # Amazena a lista de pictures disponiveis
+        
         constructor: ( imagens )->
             that = this
+
             array.forEach imagens, (value)->
                 picture = new Picture(value)
                 that._pictures.push picture if picture
 
+            # this.render()
+            this.resize()
+
             return this
+        
         render: ()->
             array.forEach this._pictures, (picture)->
                 picture.render()
 
-            if !this._rendered
-                this.resize() 
-                this._rendered = true
+            return this
 
         resize : ()->
             that = this
-            _on win, 'resize', ()-> 
 
-                clearTimeout _timer if _timer
-
-                _timer = setTimeout ()->
+            delay win, 'load', ()->
+                buffer win, 'resize', ()->
                     that.render()
                 , 200
 
-            _on win, 'scroll', ()-> 
-
-                clearTimeout _timer2 if _timer2
-
-                _timer2 = setTimeout ()->
+                buffer win, 'scroll', ()-> 
                     that.render()
                 , 200
+
+                that.render()
+                topic.publish('lazy/rendered', this)
+            , 200
+
+
+            return this
     }

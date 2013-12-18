@@ -1,2 +1,1 @@
-require ['lazy/responsive-lazyload/responsive-lazyload'], (lazy) ->
-    lazy.render()
+require ['lazy/responsive-lazyload/responsive-lazyload', 'dojo/topic'], (lazy, topic) ->
