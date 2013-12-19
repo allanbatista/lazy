@@ -1,7 +1,5 @@
 define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'onx/on/buffer', 'onx/on/delay', 'dojo/topic'], (Picture, declare, query, array, buffer, delay, topic) ->
 
-    win = window
-
     return declare null, {
         _pictures :  [], # Amazena a lista de pictures disponiveis
         
@@ -12,7 +10,6 @@ define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 
                 picture = new Picture(value)
                 that._pictures.push picture if picture
 
-            # this.render()
             this.resize()
 
             return this
@@ -26,12 +23,12 @@ define ['lazy/responsive-lazyload/Picture', 'dojo/_base/declare', 'dojo/query', 
         resize : ()->
             that = this
 
-            delay win, 'load', ()->
-                buffer win, 'resize', ()->
+            delay window, 'load', ()->
+                buffer window, 'resize', ()->
                     that.render()
                 , 200
 
-                buffer win, 'scroll', ()-> 
+                buffer window, 'scroll', ()->
                     that.render()
                 , 200
 
