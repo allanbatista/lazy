@@ -1,1 +1,1 @@
-require ['lazy/responsive-lazyload/responsive-lazyload', 'dojo/topic'], (lazy, topic) ->
+require ['lazy/responsive-lazyload', 'dojo/topic'], (lazy, topic) ->
