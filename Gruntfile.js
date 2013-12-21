@@ -21,7 +21,7 @@ module.exports = function (grunt) {
         },
         watch: {
             coffee: {
-                files: ['<%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
+                files: ['<%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}', '<%= yeoman.app %>/scripts/*/{,*/}*.{coffee,litcoffee,coffee.md}'],
                 tasks: ['coffee:dist']
             },
             coffeeTest: {
@@ -111,7 +111,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>/scripts',
-                    src: '{,*/}*.{coffee,litcoffee,coffee.md}',
+                    src: ['{,*/}*.{coffee,litcoffee,coffee.md}', '*/{,*/}*.{coffee,litcoffee,coffee.md}'],
                     dest: '.tmp/scripts',
                     ext: '.js'
                 }]
@@ -286,6 +286,13 @@ module.exports = function (grunt) {
                 cwd: '<%= yeoman.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+            scripts: {
+                expand: true,
+                dot: true,
+                cwd: '.tmp/scripts/',
+                dest: '<%= yeoman.dist %>/scripts',
+                src: '{,*/}*.js'
             }
         },
         modernizr: {
@@ -353,9 +360,10 @@ module.exports = function (grunt) {
         'concat',
         'cssmin',
         'uglify',
-        'modernizr',
+        // 'modernizr',
         'copy:dist',
-        'rev',
+        'copy:scripts',
+        // 'rev',
         'usemin'
     ]);
 
