@@ -1,5 +1,7 @@
 define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/_base/html', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], (declare, query, array, attr, construct, Dictionary, html, geometry, _on, topic)->
 
+    image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+
     formater_picture_to_array = ( node )->
         dictionary = new Dictionary()
 
@@ -27,13 +29,19 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
         }
 
     create_render = ( node , alt )->
+        that = this
         render = query 'img[data-lazy="render"]', node
 
         if( render.length == 0 )
             render = construct.create('img')
             attr.set render, 'data-lazy', "render"
             attr.set render, 'alt', alt
+            attr.set render, 'src', image_x64
             construct.place render, node
+
+            # Adiciona evento de load da imagen
+            _on render, 'load', ()->
+                topic.publish('lazy/load/image', that)
 
         return render
 
@@ -45,8 +53,9 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
 
         return media
 
-    update_render = ( render, info )->
-        attr.set render, 'src', info.src
+    update_render = ( render, info, without_src )->
+        attr.set render, 'src', info.src if !without_src
+
         attr.set render, 'width', info.width
         attr.set render, 'height', info.height
 
@@ -62,14 +71,14 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
         _current_url : null,
         _premonicao: 0, # Este atributo diz a quantos px para baixo ou para cima deve-se prever as imagens.
         _alt: '', # default alt
-        
+
         constructor: (node_picture, fx)->
             this._node = node_picture
             this._picture_list = formater_picture_to_array(this._node)
             this._alt = get_alt node_picture
 
             return this
-        
+
         setPremonicao: ( px )-> # int
             this._premonicao = parseInt px if typeof px == 'number'
 
@@ -88,16 +97,16 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
                 return this
 
             position = this.getPosition()
-            
+
+            if !this._render
+                this._render = create_render(this._node, this._alt)
+
             if position >= scrollTop - this._premonicao && position <= top + this._premonicao
-                if !this._render
-                    this._render = create_render(this._node, this._alt) 
-                    _on this._render, 'load', ()->
-                        topic.publish('lazy/load/image', that)
-                
                 update_render( this._render, info )
                 this._current_url = info.src
+            else
+                update_render( this._render, info, true )
 
             return this
-        
+
     }
