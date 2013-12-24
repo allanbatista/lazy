@@ -55,7 +55,17 @@ Com isso, é possível ter sites carregando muitas vezes mais rápido com a imag
     }
 
 #### Require
-    require('lazy/responsive-lazyload');
+    require(['lazy/responsive-lazyload']);
+
+#### Métodos disponíveis
+    require(['lazy/responsive-lazyload', 'dojo/query'], function(lazy, query){
+        // adicionando novas imagens
+        lazy.add( query('picture[data-lazy]') );
+        lazy.render();
+    });
+
+- add : adiciona novas imagens
+- render : forca o render de todas as imagens que estiverem dentro do viewport
 
 #### bower.json
     "dependencies": {
