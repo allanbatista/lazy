@@ -1,6 +1,7 @@
-define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/_base/html', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], (declare, query, array, attr, construct, Dictionary, html, geometry, _on, topic)->
+define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/window', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], (declare, query, array, attr, construct, Dictionary, win, geometry, _on, topic)->
 
     image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+    w = window
 
     formater_picture_to_array = ( node )->
         dictionary = new Dictionary()
@@ -64,6 +65,13 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
     get_alt = (node)->
         return attr.get node, 'data-lazy-alt'
 
+    node_is_on_the_screen = (node)->
+        windowBox = win.getBox()
+        position = geometry.position(node, true)
+
+        return position.y + position.h >= windowBox.t && windowBox.t + windowBox.h > position.y
+
+
     return declare null, {
         _node : null,
         _picture_list : null, # dojox.collections.Dictionary
@@ -84,28 +92,21 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
 
             return this
 
-        getPosition: ()->
-            return html.coords(this._node).t
-
         render : ()->
             that = this
-            scrollTop = window.scrollY
-            top = scrollTop + window.innerHeight
             info = this._picture_list.item( get_current_media(this._picture_list) )
 
             if info.src == this._current_url
                 return this
 
-            position = this.getPosition()
-
             if !this._render
                 this._render = create_render(this._node, this._alt)
 
-            if position >= scrollTop - this._premonicao && position <= top + this._premonicao
+            update_render( this._render, info, true )
+
+            if node_is_on_the_screen(this._render)
                 update_render( this._render, info )
                 this._current_url = info.src
-            else
-                update_render( this._render, info, true )
 
             return this
 

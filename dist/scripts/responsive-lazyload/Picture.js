@@ -1,6 +1,8 @@
 (function() {
-  define(['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/_base/html', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], function(declare, query, array, attr, construct, Dictionary, html, geometry, _on, topic) {
-    var create_render, formater_picture_to_array, get_alt, get_current_media, get_information_image, update_render;
+  define(['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/window', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], function(declare, query, array, attr, construct, Dictionary, win, geometry, _on, topic) {
+    var create_render, formater_picture_to_array, get_alt, get_current_media, get_information_image, image_x64, node_is_on_the_screen, update_render, w;
+    image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    w = window;
     formater_picture_to_array = function(node) {
       var dictionary;
       dictionary = new Dictionary();
@@ -27,13 +29,18 @@
       };
     };
     create_render = function(node, alt) {
-      var render;
+      var render, that;
+      that = this;
       render = query('img[data-lazy="render"]', node);
       if (render.length === 0) {
         render = construct.create('img');
         attr.set(render, 'data-lazy', "render");
         attr.set(render, 'alt', alt);
+        attr.set(render, 'src', image_x64);
         construct.place(render, node);
+        _on(render, 'load', function() {
+          return topic.publish('lazy/load/image', that);
+        });
       }
       return render;
     };
@@ -47,14 +54,22 @@
       });
       return media;
     };
-    update_render = function(render, info) {
-      attr.set(render, 'src', info.src);
+    update_render = function(render, info, without_src) {
+      if (!without_src) {
+        attr.set(render, 'src', info.src);
+      }
       attr.set(render, 'width', info.width);
       attr.set(render, 'height', info.height);
       return render;
     };
     get_alt = function(node) {
       return attr.get(node, 'data-lazy-alt');
+    };
+    node_is_on_the_screen = function(node) {
+      var position, windowBox;
+      windowBox = win.getBox();
+      position = geometry.position(node, true);
+      return position.y + position.h >= windowBox.t && windowBox.t + windowBox.h > position.y;
     };
     return declare(null, {
       _node: null,
@@ -75,26 +90,18 @@
         }
         return this;
       },
-      getPosition: function() {
-        return html.coords(this._node).t;
-      },
       render: function() {
-        var info, position, scrollTop, that, top;
+        var info, that;
         that = this;
-        scrollTop = window.scrollY;
-        top = scrollTop + window.innerHeight;
         info = this._picture_list.item(get_current_media(this._picture_list));
         if (info.src === this._current_url) {
           return this;
         }
-        position = this.getPosition();
-        if (position >= scrollTop - this._premonicao && position <= top + this._premonicao) {
-          if (!this._render) {
-            this._render = create_render(this._node, this._alt);
-            _on(this._render, 'load', function() {
-              return topic.publish('lazy/load/image', that);
-            });
-          }
+        if (!this._render) {
+          this._render = create_render(this._node, this._alt);
+        }
+        update_render(this._render, info, true);
+        if (node_is_on_the_screen(this._render)) {
           update_render(this._render, info);
           this._current_url = info.src;
         }

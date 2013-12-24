@@ -1,10 +1,9 @@
 (function() {
   define(['lazy/_Responsive-Lazyload', 'dojo/query'], function(ResponsiveLazyload, query) {
-    var imagens;
+    var imagens, responsive;
     imagens = query('picture[data-lazy]');
-    if (imagens) {
-      return new ResponsiveLazyload(imagens);
-    }
+    responsive = new ResponsiveLazyload();
+    responsive.add(imagens).resize();
     return null;
   });
 
