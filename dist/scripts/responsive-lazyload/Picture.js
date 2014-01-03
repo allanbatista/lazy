@@ -1,8 +1,21 @@
 (function() {
   define(['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr', 'dojo/dom-construct', 'dojox/collections/Dictionary', 'dojo/window', 'dojo/dom-geometry', 'dojo/on', 'dojo/topic'], function(declare, query, array, attr, construct, Dictionary, win, geometry, _on, topic) {
-    var create_render, formater_picture_to_array, get_alt, get_current_media, get_information_image, image_x64, node_is_on_the_screen, update_render, w;
+    var create_media, create_render, formater_picture_to_array, get_alt, get_current_media, get_information_image, image_x64, node_is_on_the_screen, update_render, w;
     image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     w = window;
+    create_media = function(min, max) {
+      var media_max, media_min;
+      if (min) {
+        media_min = '(min-width:' + min + 'px)';
+      }
+      if (max) {
+        media_max = '(max-width:' + max + 'px)';
+      }
+      if (media_min && media_max) {
+        return media_min + ' and ' + media_max;
+      }
+      return media_min || media_max || '';
+    };
     formater_picture_to_array = function(node) {
       var base_url, dictionary;
       dictionary = new Dictionary();
@@ -19,8 +32,10 @@
       return dictionary;
     };
     get_information_image = function(image, base_url) {
-      var chave, height, source, width;
-      chave = attr.get(image, 'data-lazy-media');
+      var chave, data_max, data_min, height, source, width;
+      data_min = attr.get(image, 'data-lazy-min');
+      data_max = attr.get(image, 'data-lazy-max');
+      chave = attr.get(image, 'data-lazy-media') || create_media(data_min, data_max);
       source = attr.get(image, 'data-lazy-src');
       if (base_url) {
         source = base_url + source;

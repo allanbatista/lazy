@@ -3,6 +3,16 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
     image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
     w = window
 
+    create_media = ( min, max )->
+
+        media_min = '(min-width:' + min + 'px)' if min
+        media_max = '(max-width:' + max + 'px)' if max
+
+        if media_min && media_max
+            return media_min + ' and ' + media_max
+        
+        return media_min || media_max || ''
+
     formater_picture_to_array = ( node )->
         dictionary = new Dictionary()
 
@@ -20,7 +30,10 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
         return dictionary
 
     get_information_image = ( image, base_url )->
-        chave = attr.get( image, 'data-lazy-media')
+        data_min = attr.get( image, 'data-lazy-min')
+        data_max = attr.get( image, 'data-lazy-max')
+        
+        chave = attr.get( image, 'data-lazy-media') || create_media(data_min,data_max)
         source = attr.get( image, 'data-lazy-src')
 
         # adiciona base de url
