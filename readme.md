@@ -16,6 +16,16 @@ Com isso, é possível ter sites carregando muitas vezes mais rápido com a imag
        </noscript>
     </picture>
 
+ou com uma url base padrão
+
+    <picture data-lazy-alt="Alt da imagem" data-lazy-base="http://placehold.it/" data-lazy>
+       <source data-lazy-media="(min-width: 320px)"  data-lazy-src="320x480"  data-lazy-width="320"  data-lazy-height="480">
+       <source data-lazy-media="(min-width: 768px)"  data-lazy-src="768x600/00ffff"
+       <noscript>
+           <img src="http://placehold.it/1200x600" alt="Alt da imagem" width="1200" height="600">
+       </noscript>
+    </picture>
+
 #### Wrapper da Imagem
     
     <picture data-lazy-alt="Alt da imagem" data-lazy></picture>

@@ -4,19 +4,27 @@
     image_x64 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     w = window;
     formater_picture_to_array = function(node) {
-      var dictionary;
+      var base_url, dictionary;
       dictionary = new Dictionary();
+      base_url = attr.get(node, 'data-lazy-base');
       array.forEach(query('[data-lazy-src]', node), function(value) {
         var info;
-        info = get_information_image(value);
+        if (base_url) {
+          info = get_information_image(value, base_url);
+        } else {
+          info = get_information_image(value);
+        }
         return dictionary.add(info.key, info.info);
       });
       return dictionary;
     };
-    get_information_image = function(image) {
+    get_information_image = function(image, base_url) {
       var chave, height, source, width;
       chave = attr.get(image, 'data-lazy-media');
       source = attr.get(image, 'data-lazy-src');
+      if (base_url) {
+        source = base_url + source;
+      }
       width = parseInt(attr.get(image, 'data-lazy-width') || 0);
       height = parseInt(attr.get(image, 'data-lazy-height') || 0);
       return {

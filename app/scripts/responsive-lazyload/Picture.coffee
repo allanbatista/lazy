@@ -6,17 +6,26 @@ define ['dojo/_base/declare', 'dojo/query', 'dojo/_base/array', 'dojo/dom-attr',
     formater_picture_to_array = ( node )->
         dictionary = new Dictionary()
 
+        base_url = attr.get node, 'data-lazy-base'
+
         array.forEach query('[data-lazy-src]', node), ( value )->
 
-            info = get_information_image(value)
+            if base_url
+                info = get_information_image(value, base_url)
+            else
+                info = get_information_image(value)
 
             dictionary.add info.key, info.info
 
         return dictionary
 
-    get_information_image = ( image )->
+    get_information_image = ( image, base_url )->
         chave = attr.get( image, 'data-lazy-media')
         source = attr.get( image, 'data-lazy-src')
+
+        # adiciona base de url
+        source = base_url + source if base_url
+
         width = parseInt attr.get( image, 'data-lazy-width') || 0
         height = parseInt attr.get( image, 'data-lazy-height') || 0
 
